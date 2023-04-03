@@ -118,7 +118,6 @@ void FusionAhrsUpdate(FusionAhrs *const ahrs, const FusionVector gyroscope, cons
         if (ahrs->rampedGain < ahrs->settings.gain) {
             ahrs->rampedGain = ahrs->settings.gain;
             ahrs->initialising = false;
-            ahrs->accelerationRejectionTimeout = false;
         }
     }
 
@@ -131,6 +130,7 @@ void FusionAhrsUpdate(FusionAhrs *const ahrs, const FusionVector gyroscope, cons
     if (FusionVectorIsZero(accelerometer) == false) {
 
         // Enter acceleration recovery state if acceleration rejection times out
+        ahrs->accelerationRejectionTimeout = false;
         if (ahrs->accelerationRejectionTimer > ahrs->settings.rejectionTimeout) {
             const FusionQuaternion quaternion = ahrs->quaternion;
             FusionAhrsReset(ahrs);
