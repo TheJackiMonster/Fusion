@@ -146,7 +146,8 @@ void FusionAhrsUpdate(FusionAhrs *const ahrs, const FusionVector gyroscope, cons
         if ((ahrs->initialising == true) || (FusionVectorMagnitudeSquared(ahrs->halfAccelerometerFeedback) <= ahrs->settings.accelerationRejection)) {
             halfAccelerometerFeedback = ahrs->halfAccelerometerFeedback;
             ahrs->accelerometerIgnored = false;
-            ahrs->accelerationRejectionTimer -= ahrs->accelerationRejectionTimer >= 10 ? 10 : 0;
+            ahrs->accelerationRejectionTimer = ahrs->accelerationRejectionTimer >= 10 ?
+				ahrs->accelerationRejectionTimer - 10 : 0;
         } else {
             ahrs->accelerationRejectionTimer++;
         }
@@ -175,7 +176,8 @@ void FusionAhrsUpdate(FusionAhrs *const ahrs, const FusionVector gyroscope, cons
         if ((ahrs->initialising == true) || (FusionVectorMagnitudeSquared(ahrs->halfMagnetometerFeedback) <= ahrs->settings.magneticRejection)) {
             halfMagnetometerFeedback = ahrs->halfMagnetometerFeedback;
             ahrs->magnetometerIgnored = false;
-            ahrs->magneticRejectionTimer -= ahrs->magneticRejectionTimer >= 10 ? 10 : 0;
+            ahrs->magneticRejectionTimer = ahrs->magneticRejectionTimer >= 10 ?
+				ahrs->magneticRejectionTimer - 10 : 0;
         } else {
             ahrs->magneticRejectionTimer++;
         }
