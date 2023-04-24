@@ -210,7 +210,7 @@ static FusionVector HalfGravity(const FusionAhrs *const ahrs) {
             const FusionVector halfGravity = {.axis = {
                     .x = Q.x * Q.z - Q.w * Q.y,
                     .y = Q.y * Q.z + Q.w * Q.x,
-                    .z = Q.w * Q.w - 0.5f + Q.z * Q.z,
+                    .z = 0.5f - Q.x * Q.x - Q.y * Q.y,
             }}; // third column of transposed rotation matrix scaled by 0.5
             return halfGravity;
         }
@@ -218,7 +218,7 @@ static FusionVector HalfGravity(const FusionAhrs *const ahrs) {
             const FusionVector halfGravity = {.axis = {
                     .x = Q.w * Q.y - Q.x * Q.z,
                     .y = -1.0f * (Q.y * Q.z + Q.w * Q.x),
-                    .z = 0.5f - Q.w * Q.w - Q.z * Q.z,
+                    .z = Q.x * Q.x + Q.y * Q.y - 0.5f,
             }}; // third column of transposed rotation matrix scaled by -0.5
             return halfGravity;
         }
@@ -238,14 +238,14 @@ static FusionVector HalfMagnetic(const FusionAhrs *const ahrs) {
         case FusionConventionNwu: {
             const FusionVector halfMagnetic = {.axis = {
                     .x = Q.x * Q.y + Q.w * Q.z,
-                    .y = Q.w * Q.w - 0.5f + Q.y * Q.y,
-                    .z = Q.y * Q.z - Q.w * Q.x,
+                    .y = 0.5f - Q.z * Q.z - Q.x * Q.x,
+                    .z = Q.z * Q.y - Q.w * Q.x,
             }}; // second column of transposed rotation matrix scaled by 0.5
             return halfMagnetic;
         }
         case FusionConventionEnu: {
             const FusionVector halfMagnetic = {.axis = {
-                    .x = 0.5f - Q.w * Q.w - Q.x * Q.x,
+                    .x = Q.y * Q.y + Q.z * Q.z - 0.5f,
                     .y = Q.w * Q.z - Q.x * Q.y,
                     .z = -1.0f * (Q.x * Q.z + Q.w * Q.y),
             }}; // first column of transposed rotation matrix scaled by -0.5
@@ -254,8 +254,8 @@ static FusionVector HalfMagnetic(const FusionAhrs *const ahrs) {
         case FusionConventionNed: {
             const FusionVector halfMagnetic = {.axis = {
                     .x = -1.0f * (Q.x * Q.y + Q.w * Q.z),
-                    .y = 0.5f - Q.w * Q.w - Q.y * Q.y,
-                    .z = Q.w * Q.x - Q.y * Q.z,
+                    .y = Q.z * Q.z + Q.x * Q.x - 0.5f,
+                    .z = Q.w * Q.x - Q.z * Q.y,
             }}; // second column of transposed rotation matrix scaled by -0.5
             return halfMagnetic;
         }
@@ -334,7 +334,7 @@ FusionVector FusionAhrsGetLinearAcceleration(const FusionAhrs *const ahrs) {
     const FusionVector gravity = {.axis = {
             .x = 2.0f * (Q.x * Q.z - Q.w * Q.y),
             .y = 2.0f * (Q.y * Q.z + Q.w * Q.x),
-            .z = 2.0f * (Q.w * Q.w - 0.5f + Q.z * Q.z),
+            .z = 1.0f - 2.0f * (Q.x * Q.x + Q.y * Q.y),
     }}; // third column of transposed rotation matrix
 
     // Remove gravity from accelerometer measurement
@@ -447,3 +447,4 @@ void FusionAhrsSetHeading(FusionAhrs *const ahrs, const float heading) {
 
 //------------------------------------------------------------------------------
 // End of file
+
